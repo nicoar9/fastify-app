@@ -27,7 +27,7 @@ export class MySQLUserRepository implements UserRepository {
       [randomUUID(), user.name, user.email, user.roles, user.passwordHash]
     );
     client.release();
-    return result.affectedRows > 0;
+    return result;
   }
 
   async updateUser(user: Partial<User> & { id: string }): Promise<any> {

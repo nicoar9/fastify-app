@@ -8,6 +8,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: "GET",
     url: "/get/user/:id",
+    onRequest: fastify.authenticate,
     schema: getUserById,
     handler: async (
       request: FastifyRequest<{ Params: { id: string } }>,
@@ -32,7 +33,9 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       reply: FastifyReply
     ) => {
       const user: User = request.body;
-
+      const hashedPassword = await User.hashPassword(user.passwordHash);
+      console.log(hashedPassword);
+      user.passwordHash = hashedPassword;
       const result = await userRepository.createUser(user);
       reply.send(result);
     },
